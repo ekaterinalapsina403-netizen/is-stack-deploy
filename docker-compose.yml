@@ -1,0 +1,40 @@
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "YourStrongPassw0rd"
+   # volumes:
+    #  - ./data:/var/opt/mssql
+    networks:
+      - is-net
+    ports:
+      - "127.0.0.1:1433:1433"
+
+  app:
+    build:
+      context: /home/lapshina/is-labs/IsLabApp
+      dockerfile: Dockerfile
+    image: isapp:lab9
+    container_name: isapp
+    depends_on:
+      - mssql
+    environment:
+      Logging__LogLevel__Microsoft__EntityFrameworkCore__Database__Comand: Information
+      ASPNETCORE_URLS: http://0.0.0.0:8080
+      ASPNETCORE_ENVIRONMENT: Development
+      App__Name: IsLabApp
+      App_Version: "1.0.0"
+      Connectionstrings__Mssql: "Server=mssql;Database=IsLabDb;User Id=sa;Password=YourStrongPassw0rd;TrustServerCertificate=True;Encrypt=false"
+    networks:
+      - is-net
+    ports:
+      - "127.0.0.1:5002:8080"
+
+networks:
+  is-net:
+    driver: bridge
+
+volumes:
+  mssql-data:
