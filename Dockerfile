@@ -1,2 +1,2 @@
 FROM alpine
-CMD ["echo", "Hello World"]
+CMD ["echo", "Version 1.0.1 - AutoDeploy Success!"]
